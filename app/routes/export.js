@@ -19,6 +19,9 @@ function ExportHandler(db) {
 
         allocationsDAO.getByUserIdAndThreshold(userId, null, (err, allocations) => {
             if (err) return next(err);
+            if (!allocations || allocations.length === 0) {
+                return res.status(404).send("No allocations found");
+            }
 
             const title = _.template(header)({ userId });
             const rows = allocations.map(a => `${a.stocks},${a.funds},${a.bonds}`).join("\n");
