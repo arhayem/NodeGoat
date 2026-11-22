@@ -5,6 +5,7 @@ const ContributionsHandler = require("./contributions");
 const AllocationsHandler = require("./allocations");
 const MemosHandler = require("./memos");
 const ResearchHandler = require("./research");
+const { ExportHandler } = require("./export");
 const tutorialRouter = require("./tutorial");
 const ErrorHandler = require("./error").errorHandler;
 
@@ -19,6 +20,7 @@ const index = (app, db) => {
     const allocationsHandler = new AllocationsHandler(db);
     const memosHandler = new MemosHandler(db);
     const researchHandler = new ResearchHandler(db);
+    const exportHandler = new ExportHandler(db);
 
     // Middleware to check if a user is logged in
     const isLoggedIn = sessionHandler.isLoggedInMiddleware;
@@ -74,6 +76,9 @@ const index = (app, db) => {
 
     // Research Page
     app.get("/research", isLoggedIn, researchHandler.displayResearch);
+
+    // Allocations CSV export
+    app.get("/allocations/:userId/export", isLoggedIn, exportHandler.exportAllocations);
 
     // Mount tutorial router
     app.use("/tutorial", tutorialRouter);
